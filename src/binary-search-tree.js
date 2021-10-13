@@ -83,35 +83,9 @@ module.exports = class BinarySearchTree {
   }
 
   remove(data) {
-    this._root = this.removeNode(this._root, data);
+    return !(deleteNodeHelper(this._root, data) === false);
   }
-  removeNode(node, key) {
-    if (node === null) return null;
-    else if (key < node.data) {
-      node.left = this.removeNode(node.left, key);
-      return node;
-    } else if (key > node.data) {
-      node.right = this.removeNode(node.right, key);
-      return node;
-    } else {
-      if (node.left === null && node.right === null) {
-        node = null;
-        return node;
-      }
-      if (node.left === null) {
-        node = node.right;
-        return node;
-      } else if (node.right === null) {
-        node = node.left;
-        return node;
-      }
-      var aux = this.findMinNode(node.right);
-      node.data = aux.data;
 
-      node.right = this.removeNode(node.right, aux.data);
-      return node;
-    }
-  }
   findMinNode(node) {
     if (node.left === null) {
       return node.data;
@@ -135,3 +109,29 @@ module.exports = class BinarySearchTree {
     return this.findMaxNode(this._root);
   }
 };
+function deleteNodeHelper(root, key) {
+  if (root === null) {
+  }
+  if (key < root.data) {
+    root.left = deleteNodeHelper(root.left, key);
+    return root;
+  } else if (key > root.data) {
+    root.right = deleteNodeHelper(root.right, key);
+    return root;
+  } else {
+    if (root.left === null && root.right === null) {
+      root = null;
+      return root;
+    }
+    if (root.left === null) return root.right;
+    if (root.right === null) return root.left;
+
+    let currNode = root.right;
+    while (currNode.left !== null) {
+      currNode = currNode.left;
+    }
+    root.data = currNode.data;
+    root.right = deleteNodeHelper(root.right, currNode.data);
+    return root;
+  }
+}
